@@ -136,10 +136,11 @@
             overflow: hidden;
             white-space: nowrap;
             vertical-align: middle;
-            font-size: 0.8em;
+            font-size: 0.4em;
             color: var(--green-gray);
             font-family: 'Roboto Mono', monospace;
             border-right: .1em solid var(--green-gray);
+            flex-shrink: 0;
             animation: typing-mini 2.5s steps(30, end), blink-caret .75s step-end infinite;
         }
         
@@ -147,7 +148,7 @@
             from { width: 0 }
             to { width: 100% }
         }
-
+        
         /* Focused Path Loop */
         #focus-path.path-loop {
             stroke-dasharray: 10, 15; /* Creates a dashed line */
