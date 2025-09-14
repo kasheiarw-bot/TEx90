@@ -398,140 +398,208 @@
     </main>
     
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            /* Particle background */
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            let particlesArray;
-
-            class Particle {
-                constructor(x, y, dirX, dirY, size, color) {
-                    this.x = x; this.y = y; this.dirX = dirX; this.dirY = dirY;
-                    this.size = size; this.color = color;
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                }
-                update() {
-                    if (this.x > canvas.width || this.x < 0) this.dirX = -this.dirX;
-                    if (this.y > canvas.height || this.y < 0) this.dirY = -this.dirY;
-                    this.x += this.dirX;
-                    this.y += this.dirY;
-                    this.draw();
-                }
-            }
-
-            function initParticles() {
-                particlesArray = [];
-                const colors = ['#00FF41', '#9D7BFF', '#FF00E5', '#14FCEF'];
-                let numParticles = (canvas.height * canvas.width) / 9000;
-                for (let i = 0; i < numParticles; i++) {
-                    let size = Math.random() * 2 + 1;
-                    let x = Math.random() * (innerWidth - size * 2) + size * 2;
-                    let y = Math.random() * (innerHeight - size * 2) + size * 2;
-                    let dirX = (Math.random() * 0.4) - 0.2;
-                    let dirY = (Math.random() * 0.4) - 0.2;
-                    let color = colors[Math.floor(Math.random() * colors.length)];
-                    particlesArray.push(new Particle(x, y, dirX, dirY, size, color));
-                }
-            }
-
-            function animateParticles() {
-                requestAnimationFrame(animateParticles);
-                ctx.clearRect(0, 0, innerWidth, innerHeight);
-                particlesArray.forEach(p => p.update());
-            }
-
-            window.addEventListener('resize', () => {
-                canvas.width = innerWidth; canvas.height = innerHeight; initParticles();
-            });
-            initParticles();
-            animateParticles();
-
-            /* Fade-in reveal + Focused Trajectory trigger (Option A) */
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-
-                        // Start the trajectory animations when the #why section intersects
-                        if (entry.target.id === 'why') {
-                            const path = document.getElementById('focus-path');
-                            const orb  = document.getElementById('focus-orb');
-                            if (path) path.style.animationPlayState = 'running';
-                            if (orb)  orb.style.animationPlayState  = 'running';
-                        }
-                    }
-                });
-            }, { threshold: 0.2 });
-
-            // Observe all fade-ins
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-            // Also observe the entire #why section so the animation actually starts
-            const whySection = document.getElementById('why');
-            if (whySection) observer.observe(whySection);
-
-            /* Typewriter re-trigger when visible */
-            const typewriterObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animation = 'none';
-                        entry.target.offsetHeight; // reflow
-                        entry.target.style.animation = '';
-                    }
-                });
-            }, { threshold: 0.8 });
-            document.querySelectorAll('.typewriter').forEach(el => typewriterObserver.observe(el));
-
-            /* Mini typewriter for card microtext */
-            .typewriter-mini {
-              display: inline-block;
-              font-family: 'Roboto Mono', monospace;
-              font-size: 0.8rem;
-              color: var(--green-gray);            /* #6FAF8F */
-              overflow: hidden;
-              white-space: nowrap;
-              border-right: .12em solid var(--matrix-green);
-              animation: typing-mini 2.2s steps(34, end), blink-caret .8s step-end infinite;
-              letter-spacing: 0.02em;
-            }
-            @keyframes typing-mini { from { width: 0 } to { width: 100% } }
-
-            
-            /* Chaos cloud sticky notes */
-            const chaosCloud = document.getElementById('chaos-cloud');
-            if (chaosCloud) {
-                const ideas = ['Sticky Note', 'App Idea', 'Podcast?', 'Book Draft', 'Course...', 'Project Z', 'New Plan!', 'NFT?', 'Redesign', 'Blog Post'];
-                const ideaColors = ['bg-yellow-300', 'bg-blue-400', 'bg-pink-400', 'bg-white', 'bg-red-400', 'bg-purple-400', 'bg-green-300'];
-                ideas.forEach((idea, i) => {
-                    const span = document.createElement('span');
-                    span.textContent = idea;
-                    span.className = `${ideaColors[i % ideaColors.length]} text-black text-sm p-2 rounded`;
-                    span.style.left = `${Math.random() * 80 + 10}%`;
-                    span.style.top = `${Math.random() * 80 + 10}%`;
-                    span.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-                    span.style.animationDelay = `${Math.random() * 5}s`;
-                    span.style.animationDuration = `${Math.random() * 5 + 8}s`;
-                    chaosCloud.appendChild(span);
-                });
-            }
-
-            /* Journey step reveal */
-            const journeySteps = document.querySelectorAll('.journey-step');
-            const journeyObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                    }
-                });
-            }, { threshold: 0.6 });
-            journeySteps.forEach(step => journeyObserver.observe(step));
+    document.addEventListener('DOMContentLoaded', () => {
+      /* =========================
+         1) Particle Background
+      ========================== */
+      const canvas = document.getElementById('particle-canvas');
+      if (canvas && canvas.getContext) {
+        const ctx = canvas.getContext('2d');
+        function sizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        sizeCanvas();
+    
+        class Particle {
+          constructor(x, y, dirX, dirY, size, color) {
+            this.x = x; this.y = y; this.dirX = dirX; this.dirY = dirY;
+            this.size = size; this.color = color;
+          }
+          draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+          }
+          update() {
+            if (this.x > canvas.width || this.x < 0) this.dirX = -this.dirX;
+            if (this.y > canvas.height || this.y < 0) this.dirY = -this.dirY;
+            this.x += this.dirX;
+            this.y += this.dirY;
+            this.draw();
+          }
+        }
+    
+        let particlesArray = [];
+        function initParticles() {
+          particlesArray = [];
+          const colors = ['#00FF41', '#9D7BFF', '#FF00E5', '#14FCEF'];
+          // Adjust density if needed (bigger divisor = fewer particles)
+          const numParticles = Math.max(60, Math.floor((canvas.height * canvas.width) / 9000));
+          for (let i = 0; i < numParticles; i++) {
+            const size = Math.random() * 2 + 1;
+            const x = Math.random() * (canvas.width - size * 2) + size * 2;
+            const y = Math.random() * (canvas.height - size * 2) + size * 2;
+            const dirX = (Math.random() * 0.4) - 0.2;
+            const dirY = (Math.random() * 0.4) - 0.2;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            particlesArray.push(new Particle(x, y, dirX, dirY, size, color));
+          }
+        }
+    
+        function animateParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particlesArray.forEach(p => p.update());
+          requestAnimationFrame(animateParticles);
+        }
+    
+        window.addEventListener('resize', () => {
+          sizeCanvas();
+          initParticles();
+        }, { passive: true });
+    
+        initParticles();
+        animateParticles();
+      }
+    
+      /* =========================================
+         2) Fade-in Observer + Focused Trajectory
+      ========================================== */
+      const fadeInEls = document.querySelectorAll('.fade-in');
+    
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
         });
-    </script>
+      }, { threshold: 0.2 });
+    
+      fadeInEls.forEach(el => fadeObserver.observe(el));
+    
+      // Focused trajectory: draw path + move orb when #why becomes visible
+      const whySection = document.getElementById('why');
+      if (whySection) {
+        const trajObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+    
+            const path = document.getElementById('focus-path');
+            const orb  = document.getElementById('focus-orb');
+    
+            // Kick off the CSS animations (they start paused)
+            if (path) path.style.animationPlayState = 'running';
+            if (orb)  orb.style.animationPlayState  = 'running';
+    
+            // After the initial path draw completes, add a subtle looping dash effect
+            if (path) {
+              const onDrawComplete = () => {
+                path.classList.add('path-loop'); // requires CSS for #focus-path.path-loop (dash animation)
+                path.removeEventListener('animationend', onDrawComplete);
+              };
+              path.addEventListener('animationend', onDrawComplete, { once: true });
+            }
+    
+            // Only need to trigger once
+            trajObserver.unobserve(whySection);
+          });
+        }, { threshold: 0.3 });
+        trajObserver.observe(whySection);
+      }
+    
+      /* =========================
+         3) Typewriter Re-triggers
+      ========================== */
+      // Replays both .typewriter and .typewriter-mini when scrolled into view
+      const typerEls = document.querySelectorAll('.typewriter, .typewriter-mini');
+      if (typerEls.length) {
+        const typewriterObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              // Restart CSS animation by toggling
+              entry.target.style.animation = 'none';
+              void entry.target.offsetWidth; // force reflow
+              entry.target.style.animation = '';
+            }
+          });
+        }, { threshold: 0.6 });
+        typerEls.forEach(el => typewriterObserver.observe(el));
+      }
+    
+      /* =========================
+         4) Chaos Cloud Labels
+      ========================== */
+      const chaosCloud = document.getElementById('chaos-cloud');
+      if (chaosCloud) {
+        const ideas = ['Sticky Note', 'App Idea', 'Podcast?', 'Book Draft', 'Course...', 'Project Z', 'New Plan!', 'Redesign', 'Blog Post'];
+        const ideaColors = ['bg-yellow-300', 'bg-blue-400', 'bg-pink-400', 'bg-white', 'bg-red-400', 'bg-purple-400', 'bg-green-300'];
+        // Clear any existing children (avoid duplication on hot reloads)
+        chaosCloud.innerHTML = '';
+        ideas.forEach((idea, i) => {
+          const span = document.createElement('span');
+          span.textContent = idea;
+          span.className = `${ideaColors[i % ideaColors.length]} text-black text-sm p-2 rounded`;
+          span.style.position = 'absolute';
+          span.style.left = `${Math.random() * 80 + 10}%`;
+          span.style.top = `${Math.random() * 80 + 10}%`;
+          span.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+          span.style.animation = `float ${8 + Math.random() * 6}s ease-in-out ${Math.random() * 5}s infinite`;
+          chaosCloud.appendChild(span);
+        });
+      }
+    
+      /* =========================
+         5) Journey Step Reveal
+      ========================== */
+      const journeySteps = document.querySelectorAll('.journey-step');
+      if (journeySteps.length) {
+        const journeyObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+            }
+          });
+        }, { threshold: 0.6 });
+        journeySteps.forEach(step => journeyObserver.observe(step));
+      }
+    
+      /* =========================
+         6) Proof Cards: Tilt FX
+      ========================== */
+      const tiltCards = document.querySelectorAll('.tilt-wrap .card-neo, .section-panel.card-neo');
+      if (tiltCards.length) {
+        tiltCards.forEach(card => {
+          const strength = 10; // degrees
+          function onMove(e) {
+            const rect = card.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = (e.clientX - cx) / (rect.width / 2);
+            const dy = (e.clientY - cy) / (rect.height / 2);
+            card.style.transform = `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg) translateZ(0)`;
+          }
+          function onLeave() {
+            card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+          }
+          card.addEventListener('mousemove', onMove);
+          card.addEventListener('mouseleave', onLeave);
+          // Touch safety
+          card.addEventListener('touchmove', (e) => {
+            if (!e.touches || !e.touches[0]) return;
+            const t = e.touches[0];
+            const rect = card.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = (t.clientX - cx) / (rect.width / 2);
+            const dy = (t.clientY - cy) / (rect.height / 2);
+            card.style.transform = `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg) translateZ(0)`;
+          }, { passive: true });
+          card.addEventListener('touchend', onLeave, { passive: true });
+          card.addEventListener('touchcancel', onLeave, { passive: true });
+        });
+      }
+    });
+</script>
 </body>
 </html>
