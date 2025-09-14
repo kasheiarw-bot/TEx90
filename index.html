@@ -449,6 +449,37 @@
 
             window.addEventListener('resize', () => {
                 canvas.width = innerWidth; canvas.height = innerHeight; initParticles();
+
+            // Re-trigger typewriter animations
+              const typewriterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    entry.target.style.animation = 'none';
+                    void entry.target.offsetWidth; // force reflow
+                    entry.target.style.animation = '';
+                  }
+                });
+              }, { threshold: 0.6 });
+            
+              document.querySelectorAll('.typewriter, .typewriter-mini')
+                .forEach(el => typewriterObserver.observe(el));
+            
+              // Tilt effect for Proof of Concept cards
+              document.querySelectorAll('.tilt-wrap .card-neo').forEach(card => {
+                const strength = 10;
+                card.addEventListener('mousemove', (e) => {
+                  const rect = card.getBoundingClientRect();
+                  const cx = rect.left + rect.width / 2;
+                  const cy = rect.top + rect.height / 2;
+                  const dx = (e.clientX - cx) / (rect.width / 2);
+                  const dy = (e.clientY - cy) / (rect.height / 2);
+                  card.style.transform =
+                    `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg) translateZ(0)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                  card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+                });
+              });
             });
             initParticles();
             animateParticles();
@@ -532,21 +563,6 @@
             }, { threshold: 0.6 });
             journeySteps.forEach(step => journeyObserver.observe(step));
         });
-
-        // Re-trigger typewriter animations on visibility
-            const typewriterObserver = new IntersectionObserver((entries) => {
-              entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                  entry.target.style.animation = 'none';
-                  // force reflow
-                  void entry.target.offsetWidth;
-                  // restart both typing + caret animations
-                  entry.target.style.animation = '';
-                }
-              });
-            }, { threshold: 0.6 });
-            // Observe both classes
-            document.querySelectorAll('.typewriter, .typewriter-mini').forEach(el => typewriterObserver.observe(el));
     </script>
 </body>
 </html>
