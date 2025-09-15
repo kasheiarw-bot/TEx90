@@ -1,631 +1,378 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEx90: Focused Brilliance in 90 Days</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Custom styles for cyberpunk/feminized theme */
-        :root {
-            --carbon-black: #0A0A0A;
-            --off-white: #EAEAEA;
-            --accent-violet: #9D7BFF;
-            --neon-cyan: #14FCEF;
-            --matrix-green: #00FF41;
-            --accent-magenta: #FF00E5;
-            --green-gray: #6FAF8F;
-            --panel-bg: #003B2C;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEx90 · Focused Brilliance in 90 Days</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-cyan) var(--carbon-black);
-        }
-        
-        body {
-            background-color: var(--carbon-black);
-            color: var(--off-white);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
+  <style>
+    /* ===== Cosmic Constellation Theme ===== */
+    :root {
+      --space-ink: #070711;         /* body bg */
+      --starlight: #eef2ff;         /* main text */
+      --iris: #8b8df6;              /* lavender/indigo accent */
+      --nova: #ec63ff;              /* pink-magenta accent */
+      --aqua: #4de6d7;              /* teal accent */
+      --moon: #9aa4b2;              /* muted text */
+      --glass: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+    }
 
-        /* Scanline Overlay */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5) 1px, transparent 1px, transparent 3px);
-            pointer-events: none;
-            z-index: 100;
-            opacity: 0.5;
-        }
+    html { scrollbar-width: thin; scrollbar-color: var(--iris) var(--space-ink); }
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--space-ink); color: var(--starlight); }
 
-        .font-mono { font-family: 'Roboto Mono', monospace; }
+    /* Starfield + gradient sky */
+    .sky {
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(140, 120, 255, 0.25), transparent 60%),
+        radial-gradient(900px 500px at 10% 0%, rgba(236, 99, 255, 0.18), transparent 55%),
+        radial-gradient(900px 500px at 50% 100%, rgba(77, 230, 215, 0.10), transparent 55%),
+        var(--space-ink);
+      position: relative;
+      overflow: clip;
+    }
 
-        #particle-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    .stars, .stars:before, .stars:after {
+      content: ""; position: absolute; inset: -200vh -200vw; background-repeat: repeat; pointer-events: none;
+      background-image:
+        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.9) 99%, transparent),
+        radial-gradient(1px 1px at 100px 80px, rgba(255,255,255,0.7) 99%, transparent),
+        radial-gradient(1.2px 1.2px at 250px 120px, rgba(255,255,255,0.85) 99%, transparent),
+        radial-gradient(0.8px 0.8px at 320px 200px, rgba(255,255,255,0.6) 99%, transparent);
+      background-size: 340px 340px;
+      opacity: 0.6;
+      animation: drift 120s linear infinite;
+    }
+    .stars:before { animation-duration: 180s; opacity: .4; filter: blur(.5px); }
+    .stars:after  { animation-duration: 240s; opacity: .25; filter: blur(1px); }
+    @keyframes drift { to { transform: translate3d(340px, 340px, 0); } }
 
-        .glitch-text { position: relative; text-shadow: 0 0 5px var(--accent-violet); }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--carbon-black); overflow: hidden; clip: rect(0, 900px, 0, 0);
-        }
-        .glitch-text::before { left: 2px; text-shadow: -2px 0 var(--accent-magenta); animation: glitch-anim-1 2s infinite linear alternate-reverse; }
-        .glitch-text::after { left: -2px; text-shadow: -2px 0 var(--neon-cyan), 2px 2px var(--accent-magenta); animation: glitch-anim-2 3s infinite linear alternate-reverse; }
-        @keyframes glitch-anim-1 { 0% { clip: rect(42px, 9999px, 44px, 0); } 10% { clip: rect(12px, 9999px, 60px, 0); } 20% { clip: rect(50px, 9999px, 102px, 0); } 30% { clip: rect(25px, 9999px, 5px, 0); } 40% { clip: rect(80px, 9999px, 52px, 0); } 50% { clip: rect(10px, 9999px, 85px, 0); } 60% { clip: rect(40px, 9999px, 70px, 0); } 70% { clip: rect(85px, 9999px, 40px, 0); } 80% { clip: rect(30px, 9999px, 110px, 0); } 90% { clip: rect(5px, 9999px, 75px, 0); } 100% { clip: rect(100px, 9999px, 65px, 0); } }
-        @keyframes glitch-anim-2 { 0% { clip: rect(80px, 9999px, 110px, 0); } 10% { clip: rect(30px, 9999px, 5px, 0); } 20% { clip: rect(90px, 9999px, 40px, 0); } 30% { clip: rect(15px, 9999px, 75px, 0); } 40% { clip: rect(60px, 9999px, 32px, 0); } 50% { clip: rect(5px, 9999px, 95px, 0); } 60% { clip: rect(50px, 9999px, 70px, 0); } 70% { clip: rect(75px, 9999px, 30px, 0); } 80% { clip: rect(20px, 9999px, 100px, 0); } 90% { clip: rect(10px, 9999px, 85px, 0); } 100% { clip: rect(80px, 9999px, 55px, 0); } }
+    /* Constellation lines overlay (subtle, feminine) */
+    .constellation svg { position: absolute; inset: 0; opacity: .16; }
+    .constellation line, .constellation circle { stroke: white; }
+    .constellation { pointer-events: none; }  /* add this */
+    
+    /* TEx90 Logo */
+    .tex90-logo {
+      position: relative;
+      z-index: 1;
+      display: inline-block;
+      font-weight: 800;
+      line-height: 1;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      letter-spacing: .06em;
+    
+      /* gradient text */
+      background-image: linear-gradient(90deg, #8b8df6, #ec63ff, #4de6d7, #8b8df6);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    
+      /* subtle life */
+      animation:
+        tx90-shift 10s linear infinite,
+        tx90-breathe 3.5s ease-in-out infinite;
+    }
 
-        .cta-button { transition: all 0.3s ease; box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 5px var(--neon-cyan); border: 1px solid var(--neon-cyan); }
-        .cta-button:hover { background-color: var(--matrix-green) !important; color: var(--carbon-black) !important; box-shadow: 0 0 25px var(--matrix-green), 0 0 10px var(--matrix-green), inset 0 0 10px var(--matrix-green); transform: translateY(-3px) scale(1.05); }
-        
-        .section-panel { background-color: rgba(10, 10, 10, 0.7); border: 1px solid var(--green-gray); backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(0, 59, 44, 0.5); }
-        
-        .typewriter { overflow: hidden; white-space: nowrap; display: inline-block; border-right: .15em solid var(--matrix-green); animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite; }
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--matrix-green); } }
-
-        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
-        
-        #final-cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(20, 252, 239, 0.2), transparent 50%); animation: pulse-bg 3s infinite; z-index: 0; }
-        @keyframes pulse-bg { 0%, 100% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; } }
-
-        #chaos-cloud { position: relative; height: 250px; }
-        #chaos-cloud span { position: absolute; animation: float 10s infinite ease-in-out; }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          25% { transform: translateY(-15px) translateX(10px); }
-          50% { transform: translateY(10px) translateX(-10px); }
-          75% { transform: translateY(-5px) translateX(15px); }
-        }
-        
-        /* --- FIXED: Focused Trajectory animations (Option A) --- */
-        #focus-path-svg { width: 100%; height: 250px; }
-        #focus-path {
-          stroke-dasharray: 1000;
-          stroke-dashoffset: 1000;
-          animation: draw-line 2s 0.5s ease-out forwards;
-          animation-play-state: paused;
-        }
-        #focus-orb {
-          opacity: 0;
-          offset-path: path("M 20 125 C 150 50, 250 200, 480 125");
-          offset-rotate: 0deg;
-          offset-distance: 0%;
-          animation: move-orb 4s 2.5s ease-in-out forwards;
-          animation-play-state: paused;
-          transform-box: fill-box;
-          transform-origin: center;
-          filter: drop-shadow(0 0 10px var(--accent-magenta));
-        }
-        @keyframes draw-line { to { stroke-dashoffset: 0; } }
-        @keyframes move-orb {
-          0%   { opacity: 1; offset-distance: 0%; }
-          100% { opacity: 1; offset-distance: 100%; }
-        }
-
-        /* Rotating Cube */
-        .cube-container { width: 150px; height: 150px; perspective: 1000px; }
-        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotate-cube 20s infinite linear; }
-        .cube-face {
-            position: absolute; width: 150px; height: 150px;
-            border: 1px solid var(--accent-violet);
-            background: rgba(157, 123, 255, 0.1);
-            box-shadow: 0 0 15px rgba(157, 123, 255, 0.5);
-            backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: bold; color: var(--off-white);
-        }
-        .front  { transform: rotateY(0deg) translateZ(75px); }
-        .back   { transform: rotateY(180deg) translateZ(75px); }
-        .right  { transform: rotateY(90deg) translateZ(75px); }
-        .left   { transform: rotateY(-90deg) translateZ(75px); }
-        .top    { transform: rotateX(90deg) translateZ(75px); }
-        .bottom { transform: rotateX(-90deg) translateZ(75px); }
-        @keyframes rotate-cube { from { transform: rotateX(0) rotateY(0); } to { transform: rotateX(360deg) rotateY(360deg); } }        
-        
-        /* Focused Path Loop */
-        #focus-path.path-loop {
-            stroke-dasharray: 10, 15; /* Creates a dashed line */
-            animation: loop-dash 1s linear infinite;
-        }
-       
-        /* The blink animation definition */
-        @keyframes blink-effect {
-          50% {
-            opacity: 0.5;
-          }
-        }
-        
-        /* Styles to make ONLY the subtext blink */
-        .blinking-subtext {
-            font-size: 0.5em;
-            wrap: wrap;
-            color: var(--green-gray);
-            font-family: 'Roboto Mono', monospace;
-            animation: blink-effect 2s infinite;
+/* Add these animation definitions */
+@keyframes tx90-shift {
+  to {
+    background-position: 200% center;
+  }
 }
-        @keyframes loop-dash {
-            to {
-                stroke-dashoffset: -25; /* Moves the dashes along the path */
-            }
-        }
-    </style>
+
+@keyframes tx90-breathe {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
+}
+    
+    /* Frosted glass cards */
+    .glass { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+    .glass-soft { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); }
+
+    /* Accent gradient text */
+    .tx-gradient { background: linear-gradient(90deg, var(--iris), var(--nova), var(--aqua)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    /* CTA buttons */
+    .btn-aurora { position: relative; isolation: isolate; }
+    .btn-aurora::before { content: ""; position: absolute; inset: -2px; z-index: -1; border-radius: 0.75rem; background: conic-gradient(from 200deg, var(--iris), var(--nova), var(--aqua), var(--iris)); filter: blur(12px); opacity: .45; transition: opacity .2s ease, filter .2s ease; }
+    .btn-aurora:hover::before { opacity: .9; filter: blur(16px); }
+
+    /* Mono microcopy */
+    .mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .02em; }
+
+    /* Focus rings */
+    :where(a,button,[role="button"]) { outline-offset: 3px; }
+    :where(a,button,[role="button"]):focus-visible { outline: 2px dashed var(--aqua); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .stars, .stars:before, .stars:after { animation: none; }
+      .floaty { transform: none !important; }
+    }
+  </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="overflow-x-clip">
+  <!-- HERO -->
+  <header class="sky relative min-h-[92svh] grid place-items-center text-center px-6">
+    <div class="stars"></div>
+    <div class="constellation">
+      <!-- decorative constellation net (kept minimal) -->
+      <svg viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke-width="1">
+          <line x1="80" y1="120" x2="180" y2="60" />
+          <line x1="180" y1="60" x2="300" y2="110" />
+          <line x1="300" y1="110" x2="420" y2="80" />
+          <line x1="900" y1="560" x2="1040" y2="480" />
+          <line x1="1040" y1="480" x2="1120" y2="540" />
+          <circle cx="80" cy="120" r="2" /><circle cx="180" cy="60" r="2" />
+          <circle cx="300" cy="110" r="2" /><circle cx="420" cy="80" r="2" />
+          <circle cx="900" cy="560" r="2" /><circle cx="1040" cy="480" r="2" />
+          <circle cx="1120" cy="540" r="2" />
+        </g>
+      </svg>
+    </div>
+    <!-- Header logo -->
+    <a href="/" class="relative z-20 inline-flex items-center gap-2" aria-label="TEx90">
+      <span class="tex90-logo">ＴＥｘ９０</span>
+    </a>
 
-    <!-- Section 1: Hero -->
-    <header class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
-        <canvas id="particle-canvas"></canvas>
-        <div class="relative z-10 p-6">
-            <h1 class="glitch-text text-5xl md:text-7xl lg:text-8xl font-black text-[#EAEAEA] mb-4 tracking-tighter" data-text="TEx90: Focused Brilliance in 90 Days">
-                TEx90: Focused Brilliance in 90 Days
-            </h1>
-            <h2 class="text-xl md:text-3xl font-bold text-[#FF00E5] mb-8 animate-pulse">
-                Your ideas are galaxies. Your brilliance is infinite. But brilliance without focus stays orbiting. In just 90 days, TEx90 turns scattered genius into a launched Sovereighnty Offer -- without burnout, wihtout gatekeeping, without losing the wild creativity that makes you, you.
-            </h2>
-            <p class="text-2xl md:text-3xl font-bold text-[#EAEAEA] mt-4">This is where chaos becomes clarity. Where brilliance becomes power. Where your first liberated launch takes flight.</p>
-            <a href="#offer" class="cta-button inline-block bg-[#14FCEF] text-black font-bold py-4 px-10 rounded-md text-lg mt-8">
-                Begin Your Launch for $97
-            </a>
+    <div class="relative z-10 max-w-5xl mx-auto">
+      <p class="mono text-sm tracking-widest text-indigo-200/80 mb-3">TEx90 · TRANSCENDENT ENTREPRENEURSHIP</p>
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold leading-[1.05]">
+        Focused <span class="tx-gradient">Brilliance</span> in 90 Days
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-indigo-100/90 max-w-3xl mx-auto">
+        Your ideas are constellations. TEx90 is a 90-day business coaching program for multi-gifted Black women entrepreneurs and creatives ready to transform <em>scattered brilliance</em> into a clear Sovereignty Offer.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a href="#offer" class="btn-aurora inline-flex items-center gap-2 rounded-xl px-6 py-3 bg-white/5 ring-1 ring-white/10 hover:bg-white/10 transition">
+          <span class="font-semibold">Begin Your Launch · $97</span>
+        </a>
+        <a href="#what-is" class="rounded-xl px-6 py-3 bg-white/0 ring-1 ring-white/20 hover:bg-white/10 transition">
+          Learn how it works
+        </a>
+      </div>
+      <p class="mono mt-6 text-xs text-indigo-200/70">This is where chaos becomes clarity. This is where your launch takes flight.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- WHAT IS -->
+    <section id="what-is" class="py-20 md:py-28">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="glass rounded-2xl p-8 md:p-12">
+          <div class="grid md:grid-cols-3 gap-10 items-center">
+            <div class="md:col-span-2 space-y-5">
+              <h2 class="text-3xl md:text-5xl font-extrabold">What is <span class="tx-gradient">TEx90</span>?</h2>
+              <p class="text-indigo-100/90">TEx90 is a 90‑day accelerator for multi‑gifted founders who don’t fit into tidy boxes. We treat your constellation of ideas as an advantage and build the structure that lets it shine.</p>
+              <p class="text-indigo-100/90">This creative entrepreneurship program is designed for scattered geniuses — especially Black women founders — who want a business structure for creatives, not cookie-cutter hustle culture.</p>
+              <p class="text-indigo-100/90">Across 12 weeks you’ll filter ideas, validate one Sovereignty Offer, and set a humane operating rhythm so your creativity compounds instead of scattering.</p>
+              <p class="mono text-xs text-indigo-300/80">MISSION LOG_001 · PROGRAM DEFINED</p>
+            </div>
+            <div class="md:col-span-1">
+              <!-- Placeholder visual: replace src with real asset later -->
+              <div class="glass-soft rounded-2xl p-4 aspect-square grid place-items-center">
+                <svg viewBox="0 0 120 120" class="w-40 h-40" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="g1" x1="0" x2="1"><stop offset="0%" stop-color="#8b8df6"/><stop offset="100%" stop-color="#ec63ff"/></linearGradient>
+                  </defs>
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="url(#g1)" stroke-width="2"/>
+                  <path d="M12,86 C42,26 78,106 108,34" fill="none" stroke="#4de6d7" stroke-dasharray="4 6" />
+                  <circle cx="32" cy="44" r="2" fill="#fff"/>
+                  <circle cx="72" cy="76" r="2" fill="#fff"/>
+                  <circle cx="96" cy="40" r="2" fill="#fff"/>
+                </svg>
+                <p class="mono text-[11px] text-indigo-200/70 mt-2">Constellation · Focus Map</p>
+              </div>
+            </div>
+          </div>
         </div>
-    </header>
+      </div>
+    </section>
 
-    <main>
-        <!-- Section 2: What is TEx90? -->
-        <section id="what-is" class="py-20 md:py-32">
-            <div class="max-w-6xl mx-auto px-6">
-                <div class="section-panel p-8 md:p-12 rounded-lg fade-in">
-                    <h2 class="text-4xl md:text-5xl font-bold text-[#EAEAEA] mb-12 text-center glitch-text" data-text="What is TEx90?">What is TEx90?</h2>
-                    <div class="flex flex-col md:flex-row items-center gap-12">
-                        <div class="md:w-2/3 space-y-6 text-lg text-gray-300">
-                             <p>
-                                TEx90 is a 90-day accelerator built for the brilliant, multi-gifted minds who are tired of being told to “pick one thing.” It’s a launch lab where your scattered brilliance is treated as a feature, not a flaw — and where those galaxies of ideas finally crystallize into something real.
-                            </p>
-                            <p>
-                                Over 12 weeks, you’ll move through a guided framework that filters chaos into clarity, maps your creativity into a validated offer, and equips you with rhythms and systems you can actually sustain. By the end, you won’t just have an idea — you’ll have a Sovereignty Offer live in the world, selling and aligned with your energy.
-                            </p>
-                            <p>
-                                Think of TEx90 as equal parts business incubator and liberation practice. You’re not just learning how to launch — you’re reclaiming your time, your rhythms, and your right to build on your own terms.
-                            </p>
-                            <p class="font-mono text-sm text-[#6FAF8F] pt-4 typewriter">MISSION LOG_001: The Program Defined.</p>
-                        </div>
-                        <div class="md:w-1/3 flex justify-center">
-                            <div class="cube-container">
-                                <div class="cube">
-                                    <div class="cube-face front">Focus</div>
-                                    <div class="cube-face back">Launch</div>
-                                    <div class="cube-face right">Filter</div>
-                                    <div class="cube-face left">Rhythm</div>
-                                    <div class="cube-face top">Systems</div>
-                                    <div class="cube-face bottom">Brilliance</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- WHY THIS MATTERS -->
+    <section id="why" class="py-20 md:py-28">
+      <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-5xl font-extrabold mb-6">Why this matters</h2>
+        <p class="text-lg md:text-xl text-indigo-100/90 max-w-3xl mx-auto">You don’t have a creativity problem—you have a translation problem. Brilliance without structure drifts. TEx90 acts like gravity, pulling your ideas into a <em>clean launch trajectory</em> — with sustainable business rhythms, systems that fit your genius, and the confidence to repeat the process.</p>
 
-        <!-- Section 3: Why This Matters -->
-        <section id="why" class="py-20 md:py-32">
-            <div class="max-w-6xl mx-auto px-6 text-center fade-in">
-                <h2 class="text-4xl md:text-5xl font-bold text-[#14FCEF] mb-6">Why This Matters</h2>
-                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-12">
-                    You don’t have a creativity problem. You have a translation problem.
-                </p>
-                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-12">
-                    Your mind is a galaxy — every week a new idea, every day another possibility. But brilliance without structure drifts. Projects stay half-finished, notebooks pile up, and the world never gets to experience what you’re capable of.
-                </p>
-                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-12">
-                    That’s where TEx90 comes in. Think of it as a gravity well: pulling scattered brilliance into one clear launch trajectory. In just 90 days, you stop orbiting and start moving forward — with a real offer, built to last.
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="section-panel p-6 rounded-lg h-full">
-                        <h3 class="text-2xl font-bold text-gray-400 mb-4">Before: Idea Chaos → sticky notes, half-finished files, apps everywhere.</h3>
-                        <div id="chaos-cloud"></div>
-                    </div>
-                    <div class="section-panel p-6 rounded-lg h-full">
-                         <h3 class="text-2xl font-bold text-[#00FF41] mb-4">After: Focused Trajectory → one glowing path; a Sovereighnty Offer alive in the world.</h3>
-                         <svg id="focus-path-svg" viewBox="0 0 500 250">
-                            <path id="focus-path" d="M 20 125 C 150 50, 250 200, 480 125" stroke="#00FF41" stroke-width="4" fill="none" style="filter: drop-shadow(0 0 5px #00FF41);"></path>
-                            <circle id="focus-orb" r="8" fill="#FF00E5" style="filter: drop-shadow(0 0 10px #FF00E5);"></circle>
-                         </svg>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4: The 90-Day Journey -->
-        <section id="journey" class="py-20 md:py-32">
-          <div class="max-w-4xl mx-auto px-6 fade-in">
-            <div class="section-panel p-8 md:p-12 rounded-lg">
-              <h2 class="text-4xl md:text-5xl font-bold text-center text-white mb-12 glitch-text" data-text="The 90-Day Journey">The 90-Day Journey</h2>
-              <div class="space-y-12">
-                
-                <!-- Month 1 -->
-                <div class="journey-step flex items-start gap-6 opacity-50 transition-all duration-500 transform hover:opacity-100 hover:scale-105" style="border-left: 4px solid var(--matrix-green);">
-                  <div class="pl-6 flex-grow">
-                    <h3 class="text-2xl font-bold text-[#00FF41] mb-4">Month 1 – The Interface</h3>
-                    <ul class="space-y-2 text-gray-300">
-                      <li class="flex items-start gap-2"><span class="text-[#00FF41]">✔</span> Brain dump ritual → empty your scattered notes & ideas into one place.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#00FF41]">✔</span> Idea triage → sort and categorize themes with guided frameworks + AI.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#00FF41]">✔</span> Build your Genius Ops Dashboard → a central hub for tasks, content, and timelines.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#00FF41]">✔</span> Workflow integration → link your dashboard to your real creative flow.</li>
-                    </ul>
-                    <p class="mt-4 text-sm italic text-[#6FAF8F]">Deliverable: A working Genius Ops System to hold your brilliance.</p>
-                  </div>
-                </div>
-        
-                <!-- Month 2 -->
-                <div class="journey-step flex items-start gap-6 opacity-50 transition-all duration-500 transform hover:opacity-100 hover:scale-105" style="border-left: 4px solid var(--accent-violet);">
-                  <div class="pl-6 flex-grow">
-                    <h3 class="text-2xl font-bold text-[#9D7BFF] mb-4">Month 2 – The Dream Protocol</h3>
-                    <ul class="space-y-2 text-gray-300">
-                      <li class="flex items-start gap-2"><span class="text-[#9D7BFF]">✔</span> Genius mapping → identify your throughline, your true zone of brilliance.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#9D7BFF]">✔</span> Offer brainstorm + filter → use AI-assisted narrowing to pick one viable offer.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#9D7BFF]">✔</span> Build a mini-prototype → create a freebie, beta, or sample version.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#9D7BFF]">✔</span> Validate → test with a real audience and gather feedback.</li>
-                    </ul>
-                    <p class="mt-4 text-sm italic text-[#6FAF8F]">Deliverable: A Genius-to-Product Map + Validated Prototype.</p>
-                  </div>
-                </div>
-        
-                <!-- Month 3 -->
-                <div class="journey-step flex items-start gap-6 opacity-50 transition-all duration-500 transform hover:opacity-100 hover:scale-105" style="border-left: 4px solid var(--neon-cyan);">
-                  <div class="pl-6 flex-grow">
-                    <h3 class="text-2xl font-bold text-[#14FCEF] mb-4">Month 3 – The Calibration + Exodus Engine</h3>
-                    <ul class="space-y-2 text-gray-300">
-                      <li class="flex items-start gap-2"><span class="text-[#14FCEF]">✔</span> Energy audit → uncover your real patterns of focus, rest, and output.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#14FCEF]">✔</span> Liberation Rhythm Plan → design a 90-day rhythm you can sustain.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#14FCEF]">✔</span> Package your offer → clarify structure, pricing, and delivery.</li>
-                      <li class="flex items-start gap-2"><span class="text-[#14FCEF]">✔</span> Micro-launch → sales page, promo posts, and your first Sovereignty Offer live.</li>
-                    </ul>
-                    <p class="mt-4 text-sm italic text-[#6FAF8F]">Deliverable: A launched Sovereignty Offer generating first sales.</p>
-                  </div>
-                </div>
-        
-              </div>
+        <div class="mt-12 grid md:grid-cols-2 gap-6">
+          <div class="glass rounded-2xl p-6 text-left">
+            <h3 class="font-semibold text-indigo-100/90 mb-3">Before · Idea Chaos</h3>
+            <div class="grid grid-cols-3 gap-3">
+              <!-- sticky note placeholders -->
+              <div class="glass-soft rounded-lg p-3 text-[13px] text-black/90 bg-yellow-200">Sticky Note</div>
+              <div class="glass-soft rounded-lg p-3 text-[13px] text-black/90 bg-pink-200">App Idea</div>
+              <div class="glass-soft rounded-lg p-3 text-[13px] text-black/90 bg-blue-200">Podcast?</div>
+              <div class="glass-soft rounded-lg p-3 text-[13px] text-black/90 bg-red-200">Course…</div>
+              <div class="glass-soft rounded-lg p-3 text-[13px] text-black/90 bg-green-200">Project Z</div>
+              <div class="glass-soft rounded-lg p-3 text-[13px] text-black/90 bg-purple-200">New Plan!</div>
             </div>
           </div>
-        </section>
-        
-        <!-- Section 5: Proof of Concept -->
-        <section id="proof" class="py-20 md:py-32">
-          <div class="max-w-6xl mx-auto px-6 text-center fade-in">
-            <h2 class="text-4xl md:text-5xl font-bold text-[#FF00E5] mb-6 glitch-text" data-text="Proof of Concept">
-              Proof of Concept
-            </h2>
-            <p class="text-lg md:text-xl max-w-4xl mx-auto text-gray-300 mb-12 leading-relaxed">
-              The TEx framework has already helped creators transform scattered notebooks and half-finished projects into
-              living systems and revenue-generating offers. Sticky notes, voice memos, and endless “someday” lists became
-              <span class="text-[#14FCEF] font-semibold">dashboards, validated prototypes, and real products launched into the world.</span>
-            </p>
-            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300 mb-16 leading-relaxed">
-              This isn’t hypothetical. These tools and rhythms have been tested by multi-gifted entrepreneurs who were once
-              overwhelmed, just like you. Their transformation is proof that brilliance doesn’t need to be managed —
-              it needs to be <span class="text-[#9D7BFF] font-semibold">channeled.</span>
-            </p>
-        
-            <!-- Deliverable Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              <!-- Card 1 -->
-              <div
-                class="group section-panel card-neo p-6 rounded-lg border border-transparent hover:border-[#14FCEF] transition-all duration-500 transform hover:-translate-y-3 hover:shadow-[0_0_25px_#14FCEF]">
-                <div class="overflow-hidden rounded-md">
-                  <img src="./images/focused-brilliance-workbook.png"
-                    alt="Workbook"
-                    class="rounded-md mb-6 aspect-video object-cover group-hover:scale-110 transition-transform duration-700">
-                </div>
-                <h4 class="text-xl font-bold text-white mt-3 flex items-center justify-center gap-3">
-                  <!-- icon ... -->
-                  Focused Brilliance Workbook
-                  <span class="blinking-subtext">&nbsp;Retrieving: Guided Blueprint</span>
-                </h4>
-
-              </div>
-        
-              <!-- Card 2 -->
-              <div
-                class="group section-panel card-neo p-6 rounded-lg border border-transparent hover:border-[#9D7BFF] transition-all duration-500 transform hover:-translate-y-3 hover:shadow-[0_0_25px_#9D7BFF]">
-                <div class="overflow-hidden rounded-md">
-                  <img src="./images/genius-ops-dashboard.png"
-                    alt="Dashboard"
-                    class="rounded-md mb-6 aspect-video object-cover group-hover:scale-110 transition-transform duration-700">
-                </div>
-                <h4 class="text-xl font-bold text-white mt-3 flex items-center justify-center gap-3">
-                  <!-- icon ... -->
-                  Genius Ops Dashboard
-                  <span class="blinking-subtext">&nbsp;Building: Central Hub</span>
-                </h4>
-
-              </div>
-        
-              <!-- Card 3 -->
-              <div
-                class="group section-panel card-neo p-6 rounded-lg border border-transparent hover:border-[#FF00E5] transition-all duration-500 transform hover:-translate-y-3 hover:shadow-[0_0_25px_#FF00E5]">
-                <div class="overflow-hidden rounded-md">
-                  <img src="./images/liberation-rhythm-tools.png"
-                    alt="Trackers"
-                    class="rounded-md mb-6 aspect-video object-cover group-hover:scale-110 transition-transform duration-700">
-                </div>
-                <h4 class="text-xl font-bold text-white mt-3 flex items-center justify-center gap-3">
-                  <!-- icon ... -->
-                  Liberation Rhythm Tools
-                  <span class="blinking-subtext">&nbsp;Calibrating: Consistency Protocol</span>
-                </h4>
-
-              </div>
-            </div>
-        
-            <!-- Microtext -->
-            <p class="font-mono text-sm text-[#6FAF8F] mt-12 typewriter">
-              FIELD NOTES: Snapshots of the tools + systems you’ll receive inside TEx90.
-            </p>
+          <div class="glass rounded-2xl p-6 text-left">
+            <h3 class="font-semibold text-indigo-100/90 mb-3">After · Focused Trajectory</h3>
+            <svg viewBox="0 0 520 160" class="w-full" aria-hidden="true">
+              <defs>
+                <linearGradient id="trail" x1="0" x2="1"><stop offset="0%" stop-color="#8b8df6"/><stop offset="100%" stop-color="#4de6d7"/></linearGradient>
+              </defs>
+              <path d="M10,120 C 120,20 260,180 510,80" fill="none" stroke="url(#trail)" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="10" cy="120" r="3" fill="#fff"/>
+              <circle cx="510" cy="80"  r="6" fill="#ec63ff">
+                <animate attributeName="r" values="6;8;6" dur="3s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <p class="mono text-[11px] text-indigo-200/70 mt-2">One path · One offer · Real momentum</p>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
+    <!-- THE 90-DAY JOURNEY -->
+    <section id="journey" class="py-20 md:py-28">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="space-y-8">
+          <h2 class="text-3xl md:text-5xl font-extrabold text-center">The 90‑Day Journey</h2>
 
-        <!-- Section 6: About Your Facilitator (Slim) -->
-        <section id="facilitator" class="py-16 md:py-24">
-          <div class="max-w-6xl mx-auto px-6 fade-in">
-            <div class="section-panel rounded-lg p-6 md:p-10">
-              <!-- Image (top on mobile) -->
-              <div class="flex justify-center mb-6 md:mb-8">
-                <div class="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-[#FF00E5] shadow-[0_0_24px_#FF00E5]">
-                  <!-- Swap this placeholder with your real image -->
-                  <img src="./images/facilitator-portrait.jpeg" alt="Facilitator Portrait" class="w-full h-full object-cover">
-                </div>
-              </div>
-        
-              <!-- Copy (tight, readable on small screens) -->
-              <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 text-center glitch-text" data-text="Meet Your Guide">
-                Meet Your Guide
-              </h2>
-        
-              <div class="max-w-3xl mx-auto text-gray-300 space-y-4 leading-relaxed">
-                <p>
-                  I’ve lived the scattered genius life—launching a T-shirt brand while teaching myself design, freelancing in design + writing across industries, and co-building an arts-centered events series that became a community staple in Eastern NC.
-                </p>
-                <p>
-                  That raw creativity matured into rhythm. By 2024 I was helping entrepreneurs harness AI in ways that felt powerful and human. In 2025 I launched <span class="text-[#14FCEF] font-semibold">Futures in Black</span> and <span class="text-[#9D7BFF] font-semibold">Transcendent Entrepreneurship</span>—the refined diamonds of my journey.
-                </p>
-                <p>
-                  I built <span class="text-[#FF00E5] font-semibold">TEx90</span> for multi-gifted creators who refuse to dim their light. We’ll channel your constellation of ideas into a real offer, a humane rhythm, and a system that protects your brilliance while you grow.
-                </p>
-                <p class="font-mono text-xs text-[#6FAF8F] text-center">SYSTEM ARCHITECT // LIBERATION STRATEGIST</p>
-              </div>
+          <!-- Step cards -->
+          <div class="grid gap-6">
+            <article class="glass rounded-2xl p-6 md:p-8">
+              <h3 class="text-2xl font-bold mb-2">Month 1 — <span class="tx-gradient">The Interface</span></h3>
+              <ul class="grid sm:grid-cols-2 gap-3 text-indigo-100/90">
+                <li>Brain‑dump ritual → put everything in one place</li>
+                <li>Idea triage → sort themes with guided frameworks + AI</li>
+                <li>Genius Ops Dashboard → central hub for tasks/content/timelines</li>
+                <li>Workflow integration → link the system to your real flow</li>
+              </ul>
+              <p class="mono text-xs text-indigo-300/80 mt-3">Deliverable · A working Genius Ops System</p>
+            </article>
+
+            <article class="glass rounded-2xl p-6 md:p-8">
+              <h3 class="text-2xl font-bold mb-2">Month 2 — <span class="tx-gradient">The Dream Protocol</span></h3>
+              <ul class="grid sm:grid-cols-2 gap-3 text-indigo-100/90">
+                <li>Genius mapping → identify the through‑line</li>
+                <li>Offer brainstorm + filter → select one viable offer</li>
+                <li>Mini‑prototype → a freebie, beta, or sample</li>
+                <li>Validate → product validation for entrepreneurs with real audience feedback</li>
+              </ul>
+              <p class="mono text-xs text-indigo-300/80 mt-3">Deliverable · Genius→Product Map + Validated Prototype</p>
+            </article>
+
+            <article class="glass rounded-2xl p-6 md:p-8">
+              <h3 class="text-2xl font-bold mb-2">Month 3 — <span class="tx-gradient">Calibration + Exodus</span></h3>
+              <ul class="grid sm:grid-cols-2 gap-3 text-indigo-100/90">
+                <li>Energy audit → honest patterns of focus/rest/output</li>
+                <li>Liberation Rhythm Plan → 90‑day cadence you can sustain</li>
+                <li>Package your offer → structure, pricing, delivery</li>
+                <li>Micro‑launch → page, promo, first sales live</li>
+              </ul>
+              <p class="mono text-xs text-indigo-300/80 mt-3">Deliverable · A launched Sovereignty Offer</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROOF OF CONCEPT / DELIVERABLES -->
+    <section id="proof" class="py-20 md:py-28">
+      <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 class="text-3xl md:text-5xl font-extrabold">Proof of concept</h2>
+        <p class="mt-4 text-indigo-100/90 max-w-3xl mx-auto">The TEx approach has turned scattered notebooks into dashboards, validated prototypes, and real products. Not theory—practice.</p>
+
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <div class="glass rounded-2xl overflow-hidden group">
+            <div class="aspect-video bg-white/5 grid place-items-center">
+              <!-- Placeholder image slot -->
+              <span class="mono text-xs text-indigo-200/70">PLACEHOLDER · Workbook Image</span>
+            </div>
+            <div class="p-5 text-left">
+              <h3 class="font-semibold">Focused Brilliance Workbook</h3>
+              <p class="mono text-[11px] text-indigo-300/80 mt-1">Retrieving · Guided Blueprint</p>
             </div>
           </div>
-        </section>
-
-
-
-        <!-- Section 7: The Offer -->
-        <section id="offer" class="relative py-20 md:py-32 bg-black text-center overflow-hidden">
-             <div id="final-cta-section" class="relative z-10">
-                <div class="max-w-4xl mx-auto px-6 fade-in">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 glitch-text" data-text="Your Launch Window is Open">Your Launch Window is Open</h2>
-                    <h3 class="text-3xl md:text-4xl font-bold text-[#14FCEF] mb-6">Join TEx90 Today for $97</h3>
-                    <p class="text-lg text-gray-300 mb-10">90 days. 1 focused offer. Momentum that lasts.</p>
-                    <a href="#" class="cta-button inline-block bg-[#14FCEF] text-black font-bold py-4 px-10 rounded-md text-lg">
-                        Secure Your Seat in TEx90
-                    </a>
-                </div>
+          <!-- Card 2 -->
+          <div class="glass rounded-2xl overflow-hidden group">
+            <div class="aspect-video bg-white/5 grid place-items-center">
+              <span class="mono text-xs text-indigo-200/70">PLACEHOLDER · Dashboard Image</span>
             </div>
-        </section>
+            <div class="p-5 text-left">
+              <h3 class="font-semibold">Genius Ops Dashboard</h3>
+              <p class="mono text-[11px] text-indigo-300/80 mt-1">Building · Central Hub</p>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="glass rounded-2xl overflow-hidden group">
+            <div class="aspect-video bg-white/5 grid place-items-center">
+              <span class="mono text-xs text-indigo-200/70">PLACEHOLDER · Tools Image</span>
+            </div>
+            <div class="p-5 text-left">
+              <h3 class="font-semibold">Liberation Rhythm Tools</h3>
+              <p class="mono text-[11px] text-indigo-300/80 mt-1">Calibrating · Consistency Protocol</p>
+            </div>
+          </div>
+        </div>
+        <p class="mono text-[11px] text-indigo-300/80 mt-8">FIELD NOTES · Snapshots of the systems you’ll use inside TEx90.</p>
+      </div>
+    </section>
 
-    </main>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      /* =========================
-         1) Particle Background
-      ========================== */
-      const canvas = document.getElementById('particle-canvas');
-      if (canvas && canvas.getContext) {
-        const ctx = canvas.getContext('2d');
-        function sizeCanvas() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-        }
-        sizeCanvas();
-    
-        class Particle {
-          constructor(x, y, dirX, dirY, size, color) {
-            this.x = x; this.y = y; this.dirX = dirX; this.dirY = dirY;
-            this.size = size; this.color = color;
-          }
-          draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-          }
-          update() {
-            if (this.x > canvas.width || this.x < 0) this.dirX = -this.dirX;
-            if (this.y > canvas.height || this.y < 0) this.dirY = -this.dirY;
-            this.x += this.dirX;
-            this.y += this.dirY;
-            this.draw();
-          }
-        }
-    
-        let particlesArray = [];
-        function initParticles() {
-          particlesArray = [];
-          const colors = ['#00FF41', '#9D7BFF', '#FF00E5', '#14FCEF'];
-          // Adjust density if needed (bigger divisor = fewer particles)
-          const numParticles = Math.max(60, Math.floor((canvas.height * canvas.width) / 9000));
-          for (let i = 0; i < numParticles; i++) {
-            const size = Math.random() * 2 + 1;
-            const x = Math.random() * (canvas.width - size * 2) + size * 2;
-            const y = Math.random() * (canvas.height - size * 2) + size * 2;
-            const dirX = (Math.random() * 0.4) - 0.2;
-            const dirY = (Math.random() * 0.4) - 0.2;
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            particlesArray.push(new Particle(x, y, dirX, dirY, size, color));
-          }
-        }
-    
-        function animateParticles() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          particlesArray.forEach(p => p.update());
-          requestAnimationFrame(animateParticles);
-        }
-    
-        window.addEventListener('resize', () => {
-          sizeCanvas();
-          initParticles();
-        }, { passive: true });
-    
-        initParticles();
-        animateParticles();
-      }
-    
-      /* =========================================
-         2) Fade-in Observer + Focused Trajectory
-      ========================================== */
-      const fadeInEls = document.querySelectorAll('.fade-in');
-    
-      const fadeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, { threshold: 0.2 });
-    
-      fadeInEls.forEach(el => fadeObserver.observe(el));
-    
-      // Focused trajectory: draw path + move orb when #why becomes visible
-      const whySection = document.getElementById('why');
-      if (whySection) {
-        const trajObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-    
-            const path = document.getElementById('focus-path');
-            const orb  = document.getElementById('focus-orb');
-    
-            // Kick off the CSS animations (they start paused)
-            if (path) path.style.animationPlayState = 'running';
-            if (orb)  orb.style.animationPlayState  = 'running';
-    
-            // After the initial path draw completes, add a subtle looping dash effect
-            if (path) {
-              const onDrawComplete = () => {
-                path.classList.add('path-loop'); // requires CSS for #focus-path.path-loop (dash animation)
-                path.removeEventListener('animationend', onDrawComplete);
-              };
-              path.addEventListener('animationend', onDrawComplete, { once: true });
-            }
-    
-            // Only need to trigger once
-            trajObserver.unobserve(whySection);
-          });
-        }, { threshold: 0.3 });
-        trajObserver.observe(whySection);
-      }
-    
-      /* =========================
-         3) Typewriter Re-triggers
-      ========================== */
-      // Replays both .typewriter and .typewriter-mini when scrolled into view
-      const typerEls = document.querySelectorAll('.typewriter, .typewriter-mini');
-      if (typerEls.length) {
-        const typewriterObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              // Restart CSS animation by toggling
-              entry.target.style.animation = 'none';
-              void entry.target.offsetWidth; // force reflow
-              entry.target.style.animation = '';
-            }
-          });
-        }, { threshold: 0.6 });
-        typerEls.forEach(el => typewriterObserver.observe(el));
-      }
-    
-      /* =========================
-         4) Chaos Cloud Labels
-      ========================== */
-      const chaosCloud = document.getElementById('chaos-cloud');
-      if (chaosCloud) {
-        const ideas = ['Sticky Note', 'App Idea', 'Podcast?', 'Book Draft', 'Course...', 'Project Z', 'New Plan!', 'Redesign', 'Blog Post'];
-        const ideaColors = ['bg-yellow-300', 'bg-blue-400', 'bg-pink-400', 'bg-white', 'bg-red-400', 'bg-purple-400', 'bg-green-300'];
-        // Clear any existing children (avoid duplication on hot reloads)
-        chaosCloud.innerHTML = '';
-        ideas.forEach((idea, i) => {
-          const span = document.createElement('span');
-          span.textContent = idea;
-          span.className = `${ideaColors[i % ideaColors.length]} text-black text-sm p-2 rounded`;
-          span.style.position = 'absolute';
-          span.style.left = `${Math.random() * 80 + 10}%`;
-          span.style.top = `${Math.random() * 80 + 10}%`;
-          span.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-          span.style.animation = `float ${8 + Math.random() * 6}s ease-in-out ${Math.random() * 5}s infinite`;
-          chaosCloud.appendChild(span);
-        });
-      }
-    
-      /* =========================
-         5) Journey Step Reveal
-      ========================== */
-      const journeySteps = document.querySelectorAll('.journey-step');
-      if (journeySteps.length) {
-        const journeyObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-            }
-          });
-        }, { threshold: 0.6 });
-        journeySteps.forEach(step => journeyObserver.observe(step));
-      }
-    
-      /* =========================
-         6) Proof Cards: Tilt FX
-      ========================== */
-      const tiltCards = document.querySelectorAll('.tilt-wrap .card-neo, .section-panel.card-neo');
-      if (tiltCards.length) {
-        tiltCards.forEach(card => {
-          const strength = 10; // degrees
-          function onMove(e) {
-            const rect = card.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            const dx = (e.clientX - cx) / (rect.width / 2);
-            const dy = (e.clientY - cy) / (rect.height / 2);
-            card.style.transform = `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg) translateZ(0)`;
-          }
-          function onLeave() {
-            card.style.transform = 'rotateY(0deg) rotateX(0deg)';
-          }
-          card.addEventListener('mousemove', onMove);
-          card.addEventListener('mouseleave', onLeave);
-          // Touch safety
-          card.addEventListener('touchmove', (e) => {
-            if (!e.touches || !e.touches[0]) return;
-            const t = e.touches[0];
-            const rect = card.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            const dx = (t.clientX - cx) / (rect.width / 2);
-            const dy = (t.clientY - cy) / (rect.height / 2);
-            card.style.transform = `rotateY(${dx * strength}deg) rotateX(${-dy * strength}deg) translateZ(0)`;
-          }, { passive: true });
-          card.addEventListener('touchend', onLeave, { passive: true });
-          card.addEventListener('touchcancel', onLeave, { passive: true });
-        });
-      }
-    });
-</script>
+    <!-- FACILITATOR -->
+    <section id="facilitator" class="py-20 md:py-28">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="glass rounded-2xl p-6 md:p-10">
+          <div class="md:flex md:items-center md:gap-10">
+            <div class="shrink-0 grid place-items-center mb-6 md:mb-0">
+              <div class="relative w-40 h-40 md:w-52 md:h-52 rounded-full overflow-hidden ring-2 ring-white/20">
+                <!-- Replace with your photo -->
+                <div class="w-full h-full bg-white/10 grid place-items-center">
+                  <span class="mono text-[11px] text-indigo-200/70">PLACEHOLDER · Portrait</span>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <h2 class="text-2xl md:text-4xl font-extrabold">Meet your guide</h2>
+              <p class="text-indigo-100/90">I’ve lived the scattered‑genius life—launching creative projects, learning in public, and building community around liberatory work. TEx90 is the refined result: a way to channel many talents into one clean, sovereign offer.</p>
+              <p class="text-indigo-100/90">In practice that looks like humane systems, rhythm over hustle, and a future‑facing toolkit that respects your energy <span class="italic">and</span> your ambition.</p>
+              <p class="test-indigo-100/90">I built TEx90 as a liberatory business model: part entrepreneurship sprint, part accountability program, part creative system. It’s how I help other multi-gifted women create sustainable income <span class="italic">without</span> burnout.</p>
+              <p class="mono text-xs text-indigo-300/80">SYSTEM ARCHITECT · LIBERATION STRATEGIST</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OFFER / CTA -->
+    <section id="offer" class="py-24 sky relative text-center">
+      <div class="stars"></div>
+      <div class="relative z-10 max-w-3xl mx-auto px-6">
+        <h2 class="text-3xl md:text-5xl font-extrabold">Your launch window is open</h2>
+        <p class="mt-3 text-xl text-indigo-100/90">Join TEx90 today and learn how to launch your first income-generating offer in 90 days. From brain dump to business launch, you’ll have a roadmap, tools, and community to keep your brilliance focused.</p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <a href="#" class="btn-aurora inline-flex items-center gap-2 rounded-xl px-6 py-3 bg-white/5 ring-1 ring-white/10 hover:bg-white/10 transition">
+            <span class="font-semibold">Secure your seat</span>
+          </a>
+          <a href="#journey" class="rounded-xl px-6 py-3 bg-white/0 ring-1 ring-white/20 hover:bg-white/10 transition">See the journey</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-10 text-center text-sm text-indigo-200/70">
+    <p>© <span id="year"></span> TEx90 · Futures in Black</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
