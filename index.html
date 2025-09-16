@@ -56,45 +56,38 @@
     .constellation line, .constellation circle { stroke: white; }
     .constellation { pointer-events: none; }  /* add this */
     
-    /* TEx90 Logo */
+    /* ===== TEx90 Logo (Simplified Version) ===== */
+
     .tex90-logo {
-      position: relative;
-      z-index: 1;
       display: inline-block;
       font-weight: 800;
       line-height: 1;
-      font-size: clamp(1.75rem, 4vw, 3rem);
-      letter-spacing: .06em;
+      
+      /* 1. FONT IS LARGER */
+      font-size: clamp(2.25rem, 5vw, 4rem);
+      
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      padding-right: -0.25em;
     
-      /* gradient text */
+      /* Gradient text properties */
       background-image: linear-gradient(90deg, #8b8df6, #ec63ff, #4de6d7, #8b8df6);
       background-size: 200% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       -webkit-text-fill-color: transparent;
-    
-      /* subtle life */
-      animation:
-        tx90-shift 10s linear infinite,
-        tx90-breathe 3.5s ease-in-out infinite;
+      
+      /* 2. SHIFT IS FASTER (6 seconds instead of 10) */
+      animation: tx90-shift 6s linear infinite;
     }
-
-/* Add these animation definitions */
-@keyframes tx90-shift {
-  to {
-    background-position: 200% center;
-  }
-}
-
-@keyframes tx90-breathe {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
+    
+    /* Keyframe for the color shift */
+    @keyframes tx90-shift {
+      to {
+        background-position: 200% center;
+      }
+    }
     
     /* Frosted glass cards */
     .glass { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
@@ -120,6 +113,41 @@
       .stars, .stars:before, .stars:after { animation: none; }
       .floaty { transform: none !important; }
     }
+
+    /* IDEA CHAOS: gentle, desynced float/bounce */
+    #why .mt-12 .glass:first-child .grid > div {
+      animation: chaos-wobble 7.5s ease-in-out infinite;
+      will-change: transform, filter;
+    }
+    #why .mt-12 .glass:first-child .grid > div:nth-child(2n) { animation-duration: 8.75s; animation-delay: .25s; }
+    #why .mt-12 .glass:first-child .grid > div:nth-child(3n) { animation-duration: 9.5s;  animation-delay: .6s;  }
+    #why .mt-12 .glass:first-child .grid > div:nth-child(5n) { animation-duration: 10.5s; animation-delay: .9s;  }
+    
+    @keyframes chaos-wobble {
+      0%   { transform: translate3d(0, 0, 0) rotate(0deg);              filter: drop-shadow(0 1px 0 rgba(0,0,0,.05)); }
+      20%  { transform: translate3d(3px, -6px, 0) rotate(-1.2deg);      filter: drop-shadow(0 6px 4px rgba(0,0,0,.06)); }
+      50%  { transform: translate3d(0, -10px, 0) rotate(.8deg);         filter: drop-shadow(0 10px 8px rgba(0,0,0,.08)); }
+      80%  { transform: translate3d(-3px, -4px, 0) rotate(1.1deg);      filter: drop-shadow(0 6px 4px rgba(0,0,0,.06)); }
+      100% { transform: translate3d(0, 0, 0) rotate(0deg);              filter: drop-shadow(0 1px 0 rgba(0,0,0,.05)); }
+    }
+    
+    /* pause on hover so users can read */
+    #why .mt-12 .glass:first-child .grid > div:hover { animation-play-state: paused; }
+
+    /* FOCUSED TRAJECTORY: moving dash along the curve */
+    #why .mt-12 .glass:last-child svg path {
+      stroke-dasharray: 10 16;         /* dash length / gap */
+      stroke-linecap: round;
+      animation: focus-flow 2.4s linear infinite;
+    }
+    @keyframes focus-flow {
+      to { stroke-dashoffset: -26; }   /* slides the dash pattern left */
+    }
+    
+    /* optional: twinkle the end-dot a touch */
+    #why .mt-12 .glass:last-child svg circle:last-of-type {
+      filter: drop-shadow(0 0 6px rgba(236,99,255,.65));
+    }
   </style>
 </head>
 <body class="overflow-x-clip">
@@ -144,11 +172,11 @@
     </div>
     <!-- Header logo -->
     <a href="/" class="relative z-20 inline-flex items-center gap-2" aria-label="TEx90">
-      <span class="tex90-logo">TEX90</span>
+      <span class="tex90-logo">ＴＥｘ９０</span>
     </a>
 
     <div class="relative z-10 max-w-5xl mx-auto">
-      <p class="mono text-sm tracking-widest text-indigo-200/80 mb-3">TEx90 · TRANSCENDENT ENTREPRENEURSHIP</p>
+      <p class="mono text-sm tracking-widest text-indigo-200/80 mb-3">TRANSCENDENT ENTREPRENEURSHIP</p>
       <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold leading-[1.05]">
         Focused <span class="tx-gradient">Brilliance</span> in 90 Days
       </h1>
@@ -225,12 +253,28 @@
             <svg viewBox="0 0 520 160" class="w-full" aria-hidden="true">
               <defs>
                 <linearGradient id="trail" x1="0" x2="1"><stop offset="0%" stop-color="#8b8df6"/><stop offset="100%" stop-color="#4de6d7"/></linearGradient>
+                 <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="1.8" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
               </defs>
-              <path d="M10,120 C 120,20 260,180 510,80" fill="none" stroke="url(#trail)" stroke-width="4" stroke-linecap="round"/>
+              <path id="focusPath" d="M10,120 C 120,20 260,180 510,80" fill="none" stroke="url(#trail)" stroke-width="4" stroke-linecap="round"/>
               <circle cx="10" cy="120" r="3" fill="#fff"/>
               <circle cx="510" cy="80"  r="6" fill="#ec63ff">
                 <animate attributeName="r" values="6;8;6" dur="3s" repeatCount="indefinite"/>
               </circle>
+              <!-- traveling glint -->
+              <g filter="url(#starGlow)">
+              <polygon points="0,-4 1.2,-1.2 4,0 1.2,1.2 0,4 -1.2,1.2 -4,0 -1.2,-1.2"
+                       fill="#fff">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="1.8s" repeatCount="indefinite"/>
+              </polygon>
+              <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#focusPath" xlink:href="#focusPath"/>
+              </animateMotion>
+              </g>
             </svg>
             <p class="mono text-[11px] text-indigo-200/70 mt-2">One path · One offer · Real momentum</p>
           </div>
