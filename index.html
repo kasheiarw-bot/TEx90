@@ -710,33 +710,35 @@
 })();
 </script>
 <style>
-/* --- Mobile bottom-sheet upgrades for the Journey modal --- */
+/* --- Mobile bottom-sheet upgrades for the Journey modal (fixed) --- */
 
 /* Use dynamic viewport height so iOS Safari doesn't crop */
 .journey-modal, .journey-backdrop { height: 100dvh; }
-/* Lock background scroll when open (class is on <html>) */
+/* Lock background scroll when open */
 .journey-open, .journey-open body { overflow: hidden; }
 
-/* Touch momentum & no background scroll bleed */
+/* Prevent scroll bleed */
 .journey-modal { overscroll-behavior: contain; }
 
-/* Phone layout: turn the modal into a bottom sheet and make internals scroll */
 @media (max-width: 860px) {
-  .journey-modal {
-    /* anchor the panel to the bottom with comfy safe-area padding */
+  /* ⬇️ only display when journey-open is present */
+  .journey-open .journey-modal {
     display: grid;
     place-items: end center;
+    /* safe-area padding */
     padding:
       max(12px, env(safe-area-inset-top)) 12px
       max(12px, env(safe-area-inset-bottom)) 12px;
   }
+
+  /* keep default hidden state on mobile unless journey-open is set */
+  .journey-modal { display: none; }
+
   .journey-panel {
     width: 100vw;
     max-width: 100vw;
     margin: 0;
-    /* bottom-sheet look */
     border-radius: 20px 20px 0 0;
-    /* make the panel manage its own layout & height */
     display: flex;
     flex-direction: column;
     max-height: calc(100dvh - 24px);
@@ -748,16 +750,14 @@
     padding: 16px 18px;
   }
 
-  /* One column; let the whole middle area scroll */
   .journey-body {
     grid-template-columns: 1fr;
     padding: 12px;
     flex: 1;
-    min-height: 0; /* critical for flex children to scroll */
+    min-height: 0;   /* critical for scroll */
     overflow: hidden;
   }
 
-  /* Sidebar becomes non-sticky; both side + main can scroll if tall */
   .journey-side {
     position: static;
     max-height: 28vh;
@@ -766,8 +766,8 @@
   }
 
   .journey-main {
-    max-height: none;       /* let it expand */
-    overflow: auto;         /* but scroll within the panel */
+    max-height: none;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -775,12 +775,10 @@
     position: sticky; bottom: 0; z-index: 2;
     background: var(--panel);
     border-top: 1px solid var(--ring);
-    padding:
-      12px 14px calc(12px + env(safe-area-inset-bottom));
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
     gap: 8px; flex-wrap: wrap;
   }
 
-  /* Bigger touch targets */
   .btn, .linkbtn, .phasebtn { min-height: 44px; }
   .phasebtn { padding: 12px; }
   .dot { width: 28px; height: 8px; }
