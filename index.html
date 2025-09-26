@@ -516,11 +516,7 @@
     </div>
 
     <div class="journey-footer">
-      <a class="linkbtn" href="#what-is" data-learn-link>
-        <span>Learn how it works</span>
-        <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 3.5L17 8l-3.5 1.5L12 13l-1.5-3.5L7 8l3.5-1.5L12 3z"/></svg>
-      </a>
-      <div>
+      <div style="margin-left:auto">
         <button class="btn" data-prev>Prev</button>
         <button class="btn" data-next>Next</button>
         <button class="btn btn-cta" data-join>Join TEx90</button>
@@ -607,7 +603,7 @@
   const learnL = document.querySelector('[data-learn-link]');
 
   let index = 0;
-  learnL.setAttribute('href', LEARN_URL);
+  if (learnL) learnL.setAttribute('href', LEARN_URL);
 
   // Build dots and nav
   function renderNav(){
