@@ -784,5 +784,68 @@
   .dot { width: 28px; height: 8px; }
 }
 </style>
+<style>
+/* ===== Mobile-Only: Opaque, High-Contrast Bottom Sheet ===== */
+@media (max-width: 860px) {
+  /* Darken the backdrop and remove blur for crisp contrast */
+  .journey-backdrop {
+    background: rgba(3, 6, 18, 0.96);
+    backdrop-filter: none;
+  }
+
+  /* Full-bleed, opaque panel – no glassmorphism on phones */
+  .journey-panel {
+    background: #0b1220; /* solid deep navy */
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 18px 60px rgba(0,0,0,0.65);
+    border-radius: 20px 20px 0 0;
+  }
+
+  /* Hide the cosmic halo so text sits on a clean surface */
+  .journey-halo { display: none; }
+
+  /* Sticky header/footer with stronger separation */
+  .journey-header,
+  .journey-footer {
+    background: #0b1220;
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  /* Improve readability */
+  .journey-title { font-size: 20px; letter-spacing: 0.2px; }
+  .journey-sub   { color: #b8c4d9; }          /* brighter than slate-400 */
+  .card          { background: #0e1730; }     /* slightly lighter than panel */
+  .mile          { background: #0f1a38; }     /* subtle tile for milestones */
+
+  /* Bigger, friendlier touch targets */
+  .btn, .linkbtn, .phasebtn { min-height: 48px; }
+  .journey-close { padding: 10px; }           /* easier to tap the X */
+
+  /* Buttons with clearer affordance on dark */
+  .btn:hover     { background: rgba(255,255,255,0.08); }
+  .linkbtn       { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
+  .linkbtn:hover { background: rgba(255,255,255,0.10); }
+
+  /* Keep interior scroll silky */
+  .journey-body    { overflow: hidden; }
+  .journey-side,
+  .journey-main    { -webkit-overflow-scrolling: touch; }
+
+  /* Progress dots a tad thicker for visibility */
+  .dot { width: 28px; height: 8px; }
+}
+
+/* Optional: subtle slide-up animation for the sheet */
+@media (max-width: 860px) {
+  .journey-open .journey-panel {
+    animation: journeyRise 260ms cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes journeyRise {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+}
+</style>
+
 </body>
 </html>
