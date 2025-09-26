@@ -862,5 +862,55 @@
 }
 </style>
 
+<style>
+  /* Card container */
+  .proof-card { position: relative; border-radius: 16px; overflow: hidden; }
+  
+  /* Hide default disclosure marker and make summary clickable */
+  .proof-summary { list-style: none; cursor: pointer; display: block; }
+  .proof-summary::-webkit-details-marker { display: none; }
+  
+  /* Popover panel */
+    .proof-pop{
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 14px 16px;
+      background: rgba(8,12,24,0.96); /* solid, high contrast */
+      color: #e6edf7;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      transform: translateY(8px); opacity: 0; pointer-events: none;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .proof-link{ color:#7de0ff; text-decoration:none; }
+    .proof-link:hover{ text-decoration:underline; }
+  
+  /* Desktop: show on hover; Mobile/keyboard: show when <details> is open */
+    @media (hover:hover) and (pointer:fine){
+      .proof-card:hover .proof-pop{
+        transform: translateY(0); opacity: 1; pointer-events: auto;
+      }
+    }
+    .proof-card[open] .proof-pop{
+      transform: translateY(0); opacity: 1; pointer-events: auto;
+    }
+  
+  /* Mobile polish: larger targets, non-transparent backdrop inside card */
+  @media (max-width: 860px){
+    .proof-pop{ padding: 16px 18px; font-size: 15px; line-height: 1.5; }
+    .proof-summary{ -webkit-tap-highlight-color: transparent; }
+  }
+</style>
+
+<script>
+    document.querySelectorAll('.proof-card').forEach(card=>{
+      card.addEventListener('toggle', ()=>{
+        if(card.open){
+          document.querySelectorAll('.proof-card').forEach(other=>{
+            if(other!==card) other.open = false;
+          });
+        }
+      });
+    });
+</script>
+
 </body>
 </html>
