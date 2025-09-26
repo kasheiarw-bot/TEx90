@@ -491,7 +491,7 @@
 </style>
 
 <div class="journey-backdrop" data-journey-backdrop></div>
-<div class="journey-modal" data-journey-modal aria-modal="true" role="dialog" aria-labelledby="journey-title" aria-describedby="journey-desc">
+<div id="journey-dialog" class="journey-modal" data-journey-modal aria-modal="true" role="dialog" aria-labelledby="journey-title" aria-describedby="journey-desc">
   <div class="journey-panel" data-journey-panel>
     <div class="journey-halo" aria-hidden="true"></div>
 
@@ -533,7 +533,7 @@
 <script>
 (() => {
   // ---- CONFIG ----
-  const STRIPE_URL = "https://buy.stripe.com/your-link"; // <- put your Stripe link
+  const STRIPE_URL = "https://buy.stripe.com/7sYfZg0CMgY56X56sh4F200"; // <- put your Stripe link
   const LEARN_URL  = "#learn"; // or your video URL
   // ---- DATA ----
   const PHASES = [
@@ -589,7 +589,12 @@
 
   // ---- ELEMENTS ----
   const root   = document.documentElement;
-  const btnOpen = document.querySelector('[data-journey-open]');
+  const btnOpen = document.querySelectorAll('[data-journey-open]').forEach(el => {
+      el.addEventListener('click', (e) => { e.preventDefault(); open(); });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    });
   const back   = document.querySelector('[data-journey-backdrop]');
   const modal  = document.querySelector('[data-journey-modal]');
   const panel  = document.querySelector('[data-journey-panel]');
@@ -681,7 +686,6 @@
     if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  btnOpen?.addEventListener('click', open);
   back?.addEventListener('click', close);
   btnClose?.addEventListener('click', close);
   prevB?.addEventListener('click', ()=>{ if(index>0){ index--; renderAll(); }});
