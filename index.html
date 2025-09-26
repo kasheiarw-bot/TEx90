@@ -188,6 +188,13 @@
     .proof-summary{ -webkit-tap-highlight-color: transparent; }
   }
   </style>
+  <style>
+  .proof-card.is-hovering .proof-pop{
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  </style>
 </head>
 <body class="overflow-x-clip">
   <!-- HERO -->
@@ -912,13 +919,5 @@ if (matchMedia('(any-hover: hover)').matches) {
   });
 }
 </script>
-
-<style>
-.proof-card.is-hovering .proof-pop{
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-</style>
 </body>
 </html>
