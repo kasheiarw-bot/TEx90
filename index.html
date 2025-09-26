@@ -171,9 +171,11 @@
     .proof-link:hover{ text-decoration:underline; }
   
   /* Desktop: show on hover; Mobile/keyboard: show when <details> is open */
-    @media (hover:hover) and (pointer:fine){
-      .proof-card:hover .proof-pop{
-        transform: translateY(0); opacity: 1; pointer-events: auto;
+    @media (any-hover: hover){
+    .proof-card:hover .proof-pop{
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
       }
     }
     .proof-card[open] .proof-pop{
@@ -902,5 +904,21 @@
       });
     });
 </script>
+<script>
+if (matchMedia('(any-hover: hover)').matches) {
+  document.querySelectorAll('.proof-card').forEach(card => {
+    card.addEventListener('mouseenter', () => card.classList.add('is-hovering'));
+    card.addEventListener('mouseleave', () => card.classList.remove('is-hovering'));
+  });
+}
+</script>
+
+<style>
+.proof-card.is-hovering .proof-pop{
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+</style>
 </body>
 </html>
