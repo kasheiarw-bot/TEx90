@@ -171,13 +171,6 @@
     .proof-link:hover{ text-decoration:underline; }
   
   /* Desktop: show on hover; Mobile/keyboard: show when <details> is open */
-    @media (any-hover: hover){
-    .proof-card:hover .proof-pop{
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-      }
-    }
     .proof-card[open] .proof-pop{
       transform: translateY(0); opacity: 1; pointer-events: auto;
     }
@@ -186,13 +179,6 @@
   @media (max-width: 860px){
     .proof-pop{ padding: 16px 18px; font-size: 15px; line-height: 1.5; }
     .proof-summary{ -webkit-tap-highlight-color: transparent; }
-  }
-  </style>
-  <style>
-  .proof-card.is-hovering .proof-pop{
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
   }
   </style>
 </head>
@@ -910,14 +896,6 @@
         }
       });
     });
-</script>
-<script>
-if (matchMedia('(any-hover: hover)').matches) {
-  document.querySelectorAll('.proof-card').forEach(card => {
-    card.addEventListener('mouseenter', () => card.classList.add('is-hovering'));
-    card.addEventListener('mouseleave', () => card.classList.remove('is-hovering'));
-  });
-}
 </script>
 </body>
 </html>
