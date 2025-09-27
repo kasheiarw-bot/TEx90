@@ -181,6 +181,38 @@
     .proof-summary{ -webkit-tap-highlight-color: transparent; }
   }
   </style>
+  <style>
+    /* Hint badge for proof cards (desktop hover + keyboard focus only) */
+    .proof-summary { position: relative; }
+    
+    /* Show on keyboard focus */
+    .proof-card:not([open]) .proof-summary:focus::after,
+    .proof-card:not([open]):focus-within .proof-summary::after {
+      opacity: 1; transform: translateY(0);
+    }
+    
+    /* Show on desktop hover (but does NOT open the popover) */
+    @media (any-hover: hover) {
+      .proof-card:not([open]) .proof-summary:hover::after {
+        opacity: 1; transform: translateY(0);
+      }
+    }
+    
+    /* The badge itself */
+    .proof-summary::after {
+      content: "Click to learn more";
+      position: absolute; left: 12px; bottom: 12px;
+      font-size: 12px; line-height: 1;
+      padding: 6px 8px; border-radius: 8px;
+      background: rgba(11, 18, 32, 0.92);       /* opaque for readability */
+      color: #e6edf7; border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      opacity: 0; transform: translateY(4px);
+      transition: opacity .15s ease, transform .15s ease;
+      pointer-events: none;                      /* never blocks clicks */
+      z-index: 1;
+    }
+  </style>
 </head>
 <body class="overflow-x-clip">
   <!-- HERO -->
